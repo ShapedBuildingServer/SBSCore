@@ -1,0 +1,2 @@
+# SBSCore
+SBS core plugin.
