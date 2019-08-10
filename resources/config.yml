@@ -1,0 +1,4 @@
+startupCommands:
+  - specter spawn SBS
+  - say test
+startupTime: 6000 # Noon
