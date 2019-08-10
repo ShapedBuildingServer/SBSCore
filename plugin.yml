@@ -3,3 +3,14 @@ main: sbscore\Core
 version: 0.0.1
 api: [3.0.0]
 load: POSTWORLD
+permissions:
+    sbs:
+        description: Allows usage of all custom functionality
+        default: op
+        children:
+            sbs.command:
+                description: Allows usage of all commands
+                children:
+                    sbs.command.time:
+                        description: Custom time management command
+                        default: op

@@ -6,6 +6,7 @@ use pocketmine\Server;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\utils\TextFormat;
+use sbscore\command\TimeCommand;
 
 class Core extends PluginBase
 {
@@ -21,7 +22,28 @@ class Core extends PluginBase
 
         self::loadAllLevels();
 
+        $this->preprocessCommands();
         $this->executeStartupCommands();
+    }
+
+    private function preprocessCommands()
+    {
+        $commandMap = $this->getServer()->getCommandMap();
+        $command = $commandMap->getCommand('time');
+        $command->setLabel('_time');
+        $command->unregister($commandMap);
+
+        $timeCommand = new TimeCommand($this);
+        $commandMap->register('sbs', $timeCommand);
+    }
+
+    public function setGlobalTime(int $value, bool $stopTime = true)
+    {
+        foreach ($this->getServer()->getLevels() as $level) {
+            $level->setTime($value);
+
+            if ($stopTime) $level->stopTime();
+        }
     }
 
     private static function loadAllLevels()
@@ -45,7 +67,6 @@ class Core extends PluginBase
     {
         foreach ($this->getConfig()->get('startupCommands') as $startupCommand) {
             $this->getServer()->dispatchCommand(new ConsoleCommandSender(), $startupCommand);
-            var_dump($startupCommand);
         }
     }
 
