@@ -9,14 +9,15 @@ use pocketmine\command\{
 use pocketmine\Player;
 use pocketmine\utils\TextFormat;
 use sbscore\Core;
+use sbscore\task\TimeTransition;
 
 class TimeCommand extends Command implements PluginIdentifiableCommand
 {
     /** @var int */
     const DAY = 1000;
-    const SUNSET = 12000;
-    const NIGHT = 13000;
-    const SUNRISE = 23000;
+    const SUNSET = 12500;
+    const NIGHT = 14000;
+    const SUNRISE = 23500;
 
     /** @var Core */
     private $core;
@@ -52,7 +53,7 @@ class TimeCommand extends Command implements PluginIdentifiableCommand
                     case 'set':
                         $timeValue = $args[1];
 
-                        $this->core->setGlobalTime($timeValue);
+                        $this->setGlobalTime($timeValue);
                         $sender->sendMessage("§bGlobal time set to §3{$timeValue} ticks");
                         break;
                     default:

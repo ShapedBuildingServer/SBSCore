@@ -3,10 +3,12 @@
 namespace sbscore;
 
 use pocketmine\Server;
+use pocketmine\level\Level;
 use pocketmine\plugin\PluginBase;
 use pocketmine\command\ConsoleCommandSender;
 use pocketmine\utils\TextFormat;
 use sbscore\command\TimeCommand;
+use sbscore\task\TimeTransition;
 
 class Core extends PluginBase
 {
@@ -33,17 +35,19 @@ class Core extends PluginBase
         $command->setLabel('_time');
         $command->unregister($commandMap);
 
-        $timeCommand = new TimeCommand($this);
-        $commandMap->register('sbs', $timeCommand);
+        $commandMap->register('sbs', new TimeCommand($this));
     }
 
-    public function setGlobalTime(int $value, bool $stopTime = true)
+    public function setGlobalTime(int $value)
     {
         foreach ($this->getServer()->getLevels() as $level) {
-            $level->setTime($value);
-
-            if ($stopTime) $level->stopTime();
+            $this->setTime($level, $value);
         }
+    }
+
+    public function setTime(Level $level, int $value)
+    {
+        $this->getScheduler()->scheduleRepeatingTask(new TimeTransition($level, $value), 1);
     }
 
     private static function loadAllLevels()
@@ -56,7 +60,7 @@ class Core extends PluginBase
             if (!Server::getInstance()->loadLevel($levelName)) continue;
 
             $level = Server::getInstance()->getLevelByName($levelName);
-            $level->setTime(self::getInstance()->getConfig()->get('startupTime'));
+            $level->setTime(self::getInstance()->getConfig()->get('defaultTime'));
             $level->stopTime();
         }
 
