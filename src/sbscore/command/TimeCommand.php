@@ -53,7 +53,7 @@ class TimeCommand extends Command implements PluginIdentifiableCommand
                     case 'set':
                         $timeValue = $args[1];
 
-                        $this->setGlobalTime($timeValue);
+                        $this->core->setGlobalTime($timeValue);
                         $sender->sendMessage("§bGlobal time set to §3{$timeValue} ticks");
                         break;
                     default:
