@@ -9,9 +9,12 @@ use pocketmine\command\ConsoleCommandSender;
 use pocketmine\utils\TextFormat;
 use sbscore\command\TimeCommand;
 use sbscore\task\TimeTransition;
+use sbscore\module\ModuleManager;
 
 class Core extends PluginBase
 {
+    private $text = "\n     §7__  __   __  §c__§7           \n    (_  |__) (_  §c/    _   _  _ \n    §7__) |__) __) §c\__ (_) |  (- \n\n    §a[ Enabled successfully. ]\n";
+
     /** @var Core */
     private static $instance = null;
 
@@ -26,6 +29,10 @@ class Core extends PluginBase
 
         $this->preprocessCommands();
         $this->executeStartupCommands();
+
+        ModuleManager::enableModules($this);
+
+        $this->getLogger()->info($this->text);
     }
 
     private function preprocessCommands()
