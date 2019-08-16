@@ -264,7 +264,7 @@ class EventListener implements Listener {
         $foldername = $player->getLevel()->getFolderName();
 
         if($world = $this->getWorlds()->getWorldByName($foldername)) {
-            if(!$player->hasPermission("worlds.admin.interact")) {
+            if(!$player->hasPermission("worlds.admin.build")) {
                 if($world->getInteract() === false) {
                     $event->setCancelled();
                 }

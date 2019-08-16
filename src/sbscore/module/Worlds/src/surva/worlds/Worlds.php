@@ -41,24 +41,9 @@ class Worlds extends PluginBase implements PluginModule {
 
         $this->worlds = new ArrayList();
 
-        $levelNamesArray = scandir($this->getServer()->getDataPath() . "worlds/");
-        foreach($levelNamesArray as $levelName) {
-          if($levelName === "." || $levelName === ".." || substr($levelName, -4) == ".zip") {
-            continue;
-          }
-          if (!$this->getServer()->loadLevel($levelName)) continue;
-          $lowercaseName = strtolower($levelName);
-
-          $this->getServer()->getPluginManager()->addPermission(
-              new Permission(
-                  'worlds.' . $lowercaseName . '.build'
-              )
-          );
-          $this->getServer()->getPluginManager()->addPermission(
-              new Permission(
-                  'worlds.' . $lowercaseName . '.interact'
-              )
-          );
+        foreach($this->getServer()->getLevels() as $level) {
+            $levelname = $level->getFolderName();
+            $this->getServer()->getPluginManager()->addPermission(new Permission("worlds.$levelname.build"));
         }
 
         $this->messages = new Config(

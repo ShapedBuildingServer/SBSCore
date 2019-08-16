@@ -22,7 +22,13 @@ class CreateCommand extends CustomCommand {
                 }
 
                 $player->sendMessage($this->getWorlds()->getMessage("create.success", array("name" => $args[0])));
-
+                $pureperms = $this->getWorlds()->getServer()->getPluginManager()->getPlugin("PurePerms");
+                if ($pureperms != null) {
+                    $group = $pureperms->getGroup("potx");
+                    $group->setGroupPermission("worlds.$args[0].build");
+                } else {
+                    $this->getWorlds()->getLogger()->alert("PurePerms not found");
+                }
                 return true;
             case 2:
                 switch(strtolower($args[1])) {
@@ -49,6 +55,14 @@ class CreateCommand extends CustomCommand {
                 }
 
                 $player->sendMessage($this->getWorlds()->getMessage("create.success", array("name" => $args[0])));
+
+                $pureperms = $this->getWorlds()->getServer()->getPluginManager()->getPlugin("PurePerms");
+                if ($pureperms != null) {
+                    $group = $pureperms->getGroup("potx");
+                    $group->setGroupPermission("worlds.$args[0].build");
+                } else {
+                    $this->getWorlds()->getLogger()->alert("PurePerms not found");
+                }
 
                 return true;
             default:
