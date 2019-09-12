@@ -1,0 +1,3 @@
+startupCommands:
+  - specter spawn SBS
+defaultTime: 6000 # Noon
