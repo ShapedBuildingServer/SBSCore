@@ -267,16 +267,24 @@ class API{
 		$changed = 0;
 		$time = microtime(TRUE);
 		try{
+			if (Loader::getMyPlot()->getLevelSettings($target->getLevel()->getName()) !== null)
+				if (!$session->getPlayer()->hasPermission("we.myplot-allow-outside"))
+					$checkPlot = true;
 			$blocks = [];
 			foreach ($clipboard->getData() as $block1){
 				/** @var Block $block */
 				$block = clone $block1;
 				if (self::hasFlag($flags, self::FLAG_PASTE_WITHOUT_AIR) && $block->getId() === BlockIds::AIR)
 					continue;
+
 				$blockvec3 = $target->add($block);
+
 				$level = $target->getLevel() ?? $block->getLevel();
 				if (!self::hasFlag($flags, self::FLAG_UNCENTERED))
 					$blockvec3 = $blockvec3->add($clipboard->getOffset());
+
+				if ($checkPlot && !API::isPointInPlayerPlot($blockvec3, $session->getPlayer())) continue;
+				
 				$oldblock = $level->getBlock($blockvec3->floor());
 				if ($level->setBlock($blockvec3->floor(), $block, false, false)){
 					$blocks[] = $oldblock;

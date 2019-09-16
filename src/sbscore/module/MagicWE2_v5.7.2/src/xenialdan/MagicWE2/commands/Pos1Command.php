@@ -32,6 +32,12 @@ class Pos1Command extends WECommand{
 		}
 		$lang = Loader::getInstance()->getLanguage();
 		try{
+			if (Loader::getMyPlot()->getLevelSettings($sender->getLevel()->getName()) !== null)
+				if (!$sender->hasPermission("we.myplot-allow-outside"))
+					if (!API::isPointInPlayerPlot($sender->asVector3(), $sender)) {
+						$sender->sendMessage(Loader::$prefix . TextFormat::RED . "You cannot use WorldEdit outside of your plot!");
+						return;
+					}
 			/** @var Session $session */
 			$session = API::getSession($sender);
 			if (is_null($session)){

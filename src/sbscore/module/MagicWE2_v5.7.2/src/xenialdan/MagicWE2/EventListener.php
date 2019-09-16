@@ -30,30 +30,25 @@ class EventListener implements Listener{
 		}
 	}
 
-	public function onInteract(PlayerInteractEvent $event){
-		switch ($event->getAction()){
-			case PlayerInteractEvent::RIGHT_CLICK_BLOCK: {
-				$this->onRightClickBlock($event);
-				break;
-			}
-			// case PlayerInteractEvent::RIGHT_CLICK_AIR: {
-			// 	$this->onRightClickAir($event);
-			// 	break;
-			// }
-		}
-	}
-
 	public function onBlockBreak(BlockBreakEvent $event){
 		if (!is_null($event->getItem()->getNamedTagEntry("MagicWE"))){
 			$event->setCancelled();
+
+			if (!($event->getPlayer()->hasPermission("worlds." . strtolower($event->getPlayer()->getLevel()->getFolderName()) . ".build")
+				|| $event->getPlayer()->hasPermission("worlds.admin.build"))) {
+				$event->getPlayer()->sendMessage(Loader::$prefix . TextFormat::RED . "You do not have permission to use WorldEdit here!");
+				return;
+			}
+
+			if (!$event->getPlayer()->hasPermission("we.myplot-allow-outside") && !API::isPointInPlayerPlot($event->getBlock()->asVector3(), $event->getPlayer())) {
+				$event->getPlayer()->sendMessage(Loader::$prefix . TextFormat::RED . "You cannot use WorldEdit outside of your plot!");
+				return;
+			}
+
 			/** @var Session $session */
 			$session = API::getSession($event->getPlayer());
 			if (is_null($session)){
 				throw new \Exception("No session was created - probably no permission to use " . $this->owner->getName());
-			}
-			if (!API::isPointInPlayerPlot($event->getBlock()->asVector3(), $event->getPlayer())) {
-				$event->getPlayer()->sendMessage(Loader::$prefix . TextFormat::RED . "You cannot use WorldEdit outside of your plot!");
-				return;
 			}
 			switch ($event->getItem()->getId()){
 				case ItemIds::WOODEN_AXE: {
@@ -93,17 +88,27 @@ class EventListener implements Listener{
 		}
 	}
 
-	private function onRightClickBlock(PlayerInteractEvent $event){
+	public function onRightClickBlock(PlayerInteractEvent $event){
+		if ($event->getAction() !== PlayerInteractEvent::RIGHT_CLICK_BLOCK) return;
+
 		if (!is_null($event->getItem()->getNamedTagEntry("MagicWE"))){
 			$event->setCancelled();
+
+			if (!($event->getPlayer()->hasPermission("worlds." . strtolower($event->getPlayer()->getLevel()->getFolderName()) . ".build")
+				|| $event->getPlayer()->hasPermission("worlds.admin.build"))) {
+				$event->getPlayer()->sendMessage(Loader::$prefix . TextFormat::RED . "You do not have permission to use WorldEdit here!");
+				return;
+			}
+
+			if (!$event->getPlayer()->hasPermission("we.myplot-allow-outside") && !API::isPointInPlayerPlot($event->getBlock()->asVector3(), $event->getPlayer())) {
+				$event->getPlayer()->sendMessage(Loader::$prefix . TextFormat::RED . "You cannot use WorldEdit outside of your plot!");
+				return;
+			}
+
 			/** @var Session $session */
 			$session = API::getSession($event->getPlayer());
 			if (is_null($session)){
 				throw new \Exception("No session was created - probably no permission to use " . $this->owner->getName());
-			}
-			if (!API::isPointInPlayerPlot($event->getBlock()->asVector3(), $event->getPlayer())) {
-				$event->getPlayer()->sendMessage(Loader::$prefix . TextFormat::RED . "You cannot use WorldEdit outside of your plot!");
-				return;
 			}
 			switch ($event->getItem()->getId()){
 				/*case ItemIds::WOODEN_SHOVEL: { //TODO Open issue on pmmp, RIGHT_CLICK_BLOCK + RIGHT_CLICK_AIR are BOTH called when right clicking a block - Turns out to be a client bug
@@ -135,12 +140,6 @@ class EventListener implements Listener{
 					$event->getPlayer()->sendMessage($event->getBlock()->__toString() . ', variant: ' . $event->getBlock()->getVariant());
 					break;
 				}
-				// case ItemIds::BUCKET: {
-				// 	#if (){// && has perms
-				// 	API::floodArea($event->getBlock()->getSide($event->getFace()), $event->getItem()->getNamedTagEntry("MagicWE"), API::getSession($event->getPlayer()));
-				// 	#}
-				// 	break;
-				// }
 				case ItemIds::BLAZE_ROD: {
 					$replace = $session->getLatestQuickReplace();
 					if (is_null($replace)){
@@ -152,19 +151,4 @@ class EventListener implements Listener{
 			}
 		}
 	}
-
-	// private function onRightClickAir(PlayerInteractEvent $event){
-	// 	if (!is_null($event->getItem()->getNamedTagEntry("MagicWE"))){
-	// 		$event->setCancelled();
-	// 		switch ($event->getItem()->getId()){
-	// 			case ItemIds::WOODEN_SHOVEL: {
-	// 				$target = $event->getPlayer()->getTargetBlock(100);
-	// 				if (!is_null($target)){// && has perms
-	// 					API::createBrush($target, $event->getItem()->getNamedTagEntry("MagicWE"), API::getSession($event->getPlayer()));
-	// 				}
-	// 				break;
-	// 			}
-	// 		}
-	// 	}
-	// }
 }

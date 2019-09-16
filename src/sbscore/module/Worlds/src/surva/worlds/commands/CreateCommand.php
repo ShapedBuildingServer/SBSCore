@@ -25,7 +25,7 @@ class CreateCommand extends CustomCommand {
                 $pureperms = $this->getWorlds()->getServer()->getPluginManager()->getPlugin("PurePerms");
                 if ($pureperms != null) {
                     $group = $pureperms->getGroup("potx");
-                    $group->setGroupPermission("worlds.$args[0].build");
+                    $group->setGroupPermission("worlds." . strtolower($args[0]) . ".build");
                 } else {
                     $this->getWorlds()->getLogger()->alert("PurePerms not found");
                 }
@@ -59,7 +59,7 @@ class CreateCommand extends CustomCommand {
                 $pureperms = $this->getWorlds()->getServer()->getPluginManager()->getPlugin("PurePerms");
                 if ($pureperms != null) {
                     $group = $pureperms->getGroup("potx");
-                    $group->setGroupPermission("worlds.$args[0].build");
+                    $group->setGroupPermission("worlds." . strtolower($args[0]) . ".build");
                 } else {
                     $this->getWorlds()->getLogger()->alert("PurePerms not found");
                 }
