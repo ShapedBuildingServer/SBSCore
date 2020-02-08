@@ -1,2 +1,2 @@
 # SBSCore
-SBS core plugin.
+old SBS core plugin.
